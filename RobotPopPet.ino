@@ -14,11 +14,11 @@ El mapa de pines es:
 11--> Servomotor izquierdo
 12--> Servomotor derecho
 
-
+Mando por el puerto serial de robot PopPet
 Test de avance para robot PotPet Arduino
 
 Desarrollado por César Augusto Álvarez Gaspar
-Creado: 19/09/2018 
+Creado: 5/02/2019 
 
 */
 //Demostración simple de variación de velocidad de servomotor
@@ -38,6 +38,12 @@ enum Edireccion {EAdelante,EAtraz,EDerecha,EIzquierda,EDetenido};
 //Función para determinar la dirección del robot
 void direccion(int opcion);
 
+//Función para cumplir las ordenes indicadas por el puerto serial
+void mandoSerial(char letra);
+
+//Función para cumplir las ordenes indicadas por el puerto serial
+void testMotores(void);
+
 
 //Servo Motores de rotación continua
 Servo ServoDerecho;
@@ -56,28 +62,20 @@ void setup()
   ServoDerecho.attach(PINSERVODERECHO);
   ServoIzquierdo.attach(PINSERVOIZQUIERDO);
   direccion(EDetenido);  
+  Serial.begin(9600);
 } 
 
-void loop() {
-  //Rutina de prueba, se mueve en la direcciones de adelante, atraz, derecha y izquierda
-  //Se detiene por 2 segundos entre cada cambio
-  direccion(EAdelante);
-  delay(2000);
-  direccion(EDetenido);
-  delay(2000);
-  direccion(EAtraz);
-  delay(2000);
-  direccion(EDetenido);
-  delay(2000);
-  direccion(EDerecha);
-  delay(2000);
-  direccion(EDetenido);
-  delay(2000);
-  direccion(EIzquierda);
-  delay(2000);
-  direccion(EDetenido);
-  delay(2000);
-  }
+char orden;
+
+void loop()
+{
+  if(Serial.available() > 0)
+    {
+      orden=Serial.read();
+      mandoSerial(orden);
+      Serial.write(orden);
+    }  
+}
 
 
 
@@ -108,4 +106,54 @@ void direccion(int opcion)
          break;               
    }
    return;  
+}
+
+//Función para realizar pruebas por medio del monitor serie
+//Se utilizó la configuración de mando de juegos en teclado
+void mandoSerial(char letra)
+{
+  switch(letra)
+   {
+    case 'w':
+             direccion(EAdelante);
+             break;
+    case 'x':
+             direccion(EAtraz);
+             break;         
+    case 'a':
+             direccion(EIzquierda);
+             break;
+    case 'd':
+             direccion(EDerecha);
+             break;
+    case 's':
+             direccion(EDetenido);
+             break;
+    case 't':
+             testMotores();
+             break;         
+   }                            
+}
+
+//Función para realizar pruebas de los motores
+void testMotores(void)
+{
+  //Rutina de prueba, se mueve en la direcciones de adelante, atraz, derecha y izquierda
+  //Se detiene por 2 segundos entre cada cambio
+  direccion(EAdelante);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  direccion(EAtraz);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  direccion(EDerecha);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  direccion(EIzquierda);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);                            
 }
