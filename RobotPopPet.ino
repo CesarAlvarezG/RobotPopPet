@@ -1,37 +1,111 @@
 /*
-  Blink
+RobotPopPet
 
-  Turns an LED on for one second, then off for one second, repeatedly.
 
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
+Proyecto del curso de Programación I del programa de Ingeniería Electrónica de la Universidad del Quindío
 
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
+El diseño de la estructura fue tomado de Thingverse, está disponible en el siguiente link:
+https://www.thingiverse.com/thing:1634750
 
-  This example code is in the public domain.
+Para el manejo del robot se utilizó un Arduino Nano
 
-  http://www.arduino.cc/en/Tutorial/Blink
+El mapa de pines es:
+
+11--> Servomotor izquierdo
+12--> Servomotor derecho
+
+
+Test de avance para robot PotPet Arduino
+
+Desarrollado por César Augusto Álvarez Gaspar
+Creado: 19/09/2018 
+
 */
+//Demostración simple de variación de velocidad de servomotor
+#include <Servo.h> 
 
-// the setup function runs once when you press reset or power the board
-void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
-}
 
-// the loop function runs over and over again forever
+//Declaración pines y sentidos
+#define PINSERVODERECHO 12
+#define PINSERVOIZQUIERDO 11
+#define HORARIO 0
+#define ANTIHORARIO 180
+#define DETENIDO 90
+
+//Enumeración para la codificación de la dirección
+enum Edireccion {EAdelante,EAtraz,EDerecha,EIzquierda,EDetenido};
+
+//Función para determinar la dirección del robot
+void direccion(int opcion);
+
+
+//Servo Motores de rotación continua
+Servo ServoDerecho;
+Servo ServoIzquierdo;
+
+//Fija velocidad del servo:
+  //0 , máxima velocidad en un sentido
+  //90, punto muerto, servo está detenido
+  //180, máxima velocidad en el otro sentido 
+  
+
+//Código de inicialización
+void setup() 
+{ 
+  //Pin al que se encuentra conectado el servo
+  ServoDerecho.attach(PINSERVODERECHO);
+  ServoIzquierdo.attach(PINSERVOIZQUIERDO);
+  direccion(EDetenido);  
+} 
+
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);                       // wait for a second
+  //Rutina de prueba, se mueve en la direcciones de adelante, atraz, derecha y izquierda
+  //Se detiene por 2 segundos entre cada cambio
+  direccion(EAdelante);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  direccion(EAtraz);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  direccion(EDerecha);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  direccion(EIzquierda);
+  delay(2000);
+  direccion(EDetenido);
+  delay(2000);
+  }
+
+
+
+void direccion(int opcion)
+{
+   //Seleción de la dirección a tomar, según la opción ingresada
+   switch(opcion)
+   {
+    case EAdelante:
+         ServoDerecho.write(HORARIO);
+         ServoIzquierdo.write(ANTIHORARIO);
+         break;
+    case EAtraz:
+         ServoDerecho.write(ANTIHORARIO);
+         ServoIzquierdo.write(HORARIO);
+         break;
+    case EDerecha:
+         ServoDerecho.write(ANTIHORARIO);
+         ServoIzquierdo.write(ANTIHORARIO);
+         break;
+    case EIzquierda:
+         ServoDerecho.write(HORARIO);
+         ServoIzquierdo.write(HORARIO);
+         break;
+    case EDetenido:
+         ServoDerecho.write(DETENIDO);
+         ServoIzquierdo.write(DETENIDO);
+         break;               
+   }
+   return;  
 }
