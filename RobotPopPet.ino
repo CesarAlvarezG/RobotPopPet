@@ -33,6 +33,7 @@ Modificado: 27/02/2019
 #define HORARIO 0
 #define ANTIHORARIO 180
 #define DETENIDO 90
+#define PITO 4
 
 //Enumeración para la codificación de la dirección
 enum Edireccion {EAdelante,EAtraz,EDerecha,EIzquierda,EDetenido};
@@ -65,6 +66,8 @@ void setup()
   ServoIzquierdo.attach(PINSERVOIZQUIERDO);
   direccion(EDetenido);  
   Serial.begin(9600);
+  pinMode(PITO,OUTPUT);//Pin al que esta conectado el pito
+  digitalWrite(PITO,LOW);
 } 
 
 char orden;
@@ -144,6 +147,12 @@ void mandoSerial(char letra)
              break;
     case '+':
              velocidad=100;
+             break;
+    case 'p':
+             digitalWrite(PITO,HIGH);
+             break;
+    case 'n':
+             digitalWrite(PITO,LOW);
              break;
    }                            
 }
