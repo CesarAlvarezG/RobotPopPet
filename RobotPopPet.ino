@@ -25,6 +25,7 @@ Modificado: 27/02/2019
 */
 
 #include <Servo.h> 
+#include <SoftwareSerial.h>
 
 
 //Declaración pines y sentidos
@@ -34,6 +35,8 @@ Modificado: 27/02/2019
 #define ANTIHORARIO 180
 #define DETENIDO 90
 #define PITO 4
+#define TXBluetooth 3
+#define RXBluetooth 2
 
 //Enumeración para la codificación de la dirección
 enum Edireccion {EAdelante,EAtraz,EDerecha,EIzquierda,EDetenido};
@@ -47,10 +50,17 @@ void mandoSerial(char letra);
 //Función para cumplir las ordenes indicadas por el puerto serial
 void testMotores(void);
 
+//Función para realizar una celebración
+void celebrar(void);
+
 
 //Servo Motores de rotación continua
 Servo ServoDerecho;
 Servo ServoIzquierdo;
+
+//Declaración de la interfaz del modulo Bluetooth
+SoftwareSerial BT(RXBluetooth,TXBluetooth);
+
 
 //Fija velocidad del servo:
   //0 , máxima velocidad en un sentido
@@ -68,6 +78,7 @@ void setup()
   Serial.begin(9600);
   pinMode(PITO,OUTPUT);//Pin al que esta conectado el pito
   digitalWrite(PITO,LOW);
+  BT.begin(9600);
 } 
 
 char orden;
@@ -81,7 +92,13 @@ void loop()
       orden=Serial.read();
       mandoSerial(orden);
       Serial.write(orden);
-    }  
+    }
+  if(BT.available() > 0)
+    {
+      orden=BT.read();
+      mandoSerial(orden);
+      Serial.write(orden);
+    }    
 }
 
 
