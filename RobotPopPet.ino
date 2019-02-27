@@ -19,9 +19,11 @@ Test de avance para robot PotPet Arduino
 
 Desarrollado por César Augusto Álvarez Gaspar
 Creado: 5/02/2019 
+Modificado: 27/02/2019
+
 
 */
-//Demostración simple de variación de velocidad de servomotor
+
 #include <Servo.h> 
 
 
@@ -66,6 +68,8 @@ void setup()
 } 
 
 char orden;
+int velocidad=10;//Variable con la velocidad del robot
+//Rango de velocidad de 0 a 100
 
 void loop()
 {
@@ -78,29 +82,32 @@ void loop()
 }
 
 
-
+//Función para determinar la dirección teniendo en cuenta la velocidad
 void direccion(int opcion)
 {
-   //Seleción de la dirección a tomar, según la opción ingresada
    switch(opcion)
    {
     case EAdelante:
-         ServoDerecho.write(HORARIO);
-         ServoIzquierdo.write(ANTIHORARIO);
+         ServoDerecho.write(0.9*HORARIO*velocidad+DETENIDO);
+         ServoIzquierdo.write(0.9*ANTIHORARIO*velocidad+DETENIDO);
          break;
     case EAtraz:
-         ServoDerecho.write(ANTIHORARIO);
-         ServoIzquierdo.write(HORARIO);
+         ServoDerecho.write(0.9*ANTIHORARIO*velocidad+DETENIDO);
+         ServoIzquierdo.write(0.9*HORARIO*velocidad+DETENIDO);
          break;
     case EDerecha:
-         ServoDerecho.write(ANTIHORARIO);
-         ServoIzquierdo.write(ANTIHORARIO);
+         ServoDerecho.write(0.9*ANTIHORARIO*velocidad+DETENIDO);
+         ServoIzquierdo.write(0.9*ANTIHORARIO*velocidad+DETENIDO);
          break;
     case EIzquierda:
-         ServoDerecho.write(HORARIO);
-         ServoIzquierdo.write(HORARIO);
+         ServoDerecho.write(0.9*HORARIO*velocidad+DETENIDO);
+         ServoIzquierdo.write(0.9*HORARIO*velocidad+DETENIDO);
          break;
     case EDetenido:
+         ServoDerecho.write(DETENIDO);
+         ServoIzquierdo.write(DETENIDO);
+         break;
+    default:
          ServoDerecho.write(DETENIDO);
          ServoIzquierdo.write(DETENIDO);
          break;               
@@ -131,7 +138,13 @@ void mandoSerial(char letra)
              break;
     case 't':
              testMotores();
-             break;         
+             break;
+    case '-':
+             velocidad=50;
+             break;
+    case '+':
+             velocidad=100;
+             break;
    }                            
 }
 
