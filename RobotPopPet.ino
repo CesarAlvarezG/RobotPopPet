@@ -154,6 +154,9 @@ void mandoSerial(char letra)
     case 'n':
              digitalWrite(PITO,LOW);
              break;
+    case 'c':
+             celebrar();
+             break;
    }                            
 }
 
@@ -178,4 +181,19 @@ void testMotores(void)
   delay(2000);
   direccion(EDetenido);
   delay(2000);                            
+}
+
+void celebrar(void)
+{
+  //Rutina de celebración
+  //Se detiene por 1 segundo entre cada cambio
+  for(int i=0;i<=4;i++)
+  {
+      direccion(EDerecha);
+      digitalWrite(PITO,HIGH);
+      delay(500);
+      direccion(EIzquierda);
+      digitalWrite(PITO,LOW);
+      delay(500);    
+  }
 }
